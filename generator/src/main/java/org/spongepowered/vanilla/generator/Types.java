@@ -45,6 +45,8 @@ final class Types {
 
     public static final String NAMESPACE_SPONGE = "sponge";
 
+    public static final String NAMESPACE_MINECRAFT = "minecraft";
+
     public static final WildcardTypeName WILDCARD = WildcardTypeName.subtypeOf(TypeName.OBJECT);
 
     public static final ClassName RESOURCE_KEY = ClassName.get(Context.BASE_PACKAGE, "ResourceKey");
@@ -52,6 +54,8 @@ final class Types {
     public static final ClassName SPONGE = ClassName.get(Context.BASE_PACKAGE, "Sponge");
 
     public static final ClassName DEFAULTED_REGISTRY_REFERENCE = ClassName.get(Context.BASE_PACKAGE + ".registry", "DefaultedRegistryReference");
+
+    public static final ClassName REGISTRY = ClassName.get(Context.BASE_PACKAGE + ".registry", "Registry");
 
     public static final ClassName REGISTRY_KEY = ClassName.get(Context.BASE_PACKAGE + ".registry", "RegistryKey");
 
@@ -62,6 +66,8 @@ final class Types {
     public static final ClassName REGISTRY_SCOPE = ClassName.get(Context.BASE_PACKAGE + ".registry", "RegistryScope");
 
     public static final ClassName REGISTRY_TYPES = ClassName.get(Context.BASE_PACKAGE + ".registry", "RegistryTypes");
+
+    public static final ClassName SERVER_WORLD = ClassName.get(Context.BASE_PACKAGE + ".world.server", "ServerWorld");
 
     public static final ClassName TAG = ClassName.get(Context.BASE_PACKAGE + ".tag", "Tag");
 

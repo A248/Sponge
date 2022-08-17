@@ -255,6 +255,7 @@ public final class GeneratorMain {
                 RegistryScope.SERVER
             ),
             new BlockStatePropertiesGenerator(),
+            new BlockStatePropertyKeysGenerator(),
             new TagGenerator(
                     "BlockType Tags",
                     "BLOCK_TYPE_TAGS",

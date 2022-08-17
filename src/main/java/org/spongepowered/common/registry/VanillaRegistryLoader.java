@@ -28,7 +28,9 @@ import com.google.common.base.CaseFormat;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.advancements.FrameType;
+import net.minecraft.core.FrontAndTop;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -57,6 +59,8 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.block.state.properties.AttachFace;
+import net.minecraft.world.level.block.state.properties.BambooLeaves;
+import net.minecraft.world.level.block.state.properties.BellAttachType;
 import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.level.block.state.properties.ComparatorMode;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
@@ -68,6 +72,7 @@ import net.minecraft.world.level.block.state.properties.RedstoneSide;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.block.state.properties.StairsShape;
 import net.minecraft.world.level.block.state.properties.StructureMode;
+import net.minecraft.world.level.block.state.properties.WallSide;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.scores.Team;
 import net.minecraft.world.scores.criteria.ObjectiveCriteria;
@@ -137,6 +142,8 @@ final class VanillaRegistryLoader {
     private void loadEnumRegistries() {
         this.knownName(RegistryTypes.ARMOR_MATERIAL, ArmorMaterials.values(), am -> ((ArmorMaterialsAccessor) (Object) am).accessor$name());
         this.knownName(RegistryTypes.ATTACHMENT_SURFACE, AttachFace.values(), AttachFace::getSerializedName);
+        this.automaticSerializedName(RegistryTypes.BAMBOO_LEAVES_TYPE, BambooLeaves.values());
+        this.automaticSerializedName(RegistryTypes.BELL_ATTACHMENT_TYPE, BellAttachType.values());
         this.manualName(RegistryTypes.ATTRIBUTE_OPERATION, AttributeModifier.Operation.values(), map -> {
             // names come from net.minecraft.world.level.storage.loot.functions.SetAttributesFunction.Modifier#operationFromString
             map.put(AttributeModifier.Operation.ADDITION, "addition");
@@ -180,6 +187,7 @@ final class VanillaRegistryLoader {
         this.knownName(RegistryTypes.INSTRUMENT_TYPE, NoteBlockInstrument.values(), NoteBlockInstrument::getSerializedName);
         this.automaticName(RegistryTypes.ITEM_RARITY, Rarity.values());
         this.automaticName(RegistryTypes.ITEM_TIER, Tiers.values());
+        this.automaticSerializedName(RegistryTypes.JIGSAW_BLOCK_ORIENTATION, FrontAndTop.values());
         this.knownName(RegistryTypes.MOOSHROOM_TYPE, MushroomCow.MushroomType.values(), type -> ((MushroomCow_MushroomTypeAccessor) (Object) type).accessor$type());
         this.knownName(RegistryTypes.OBJECTIVE_DISPLAY_MODE, ObjectiveCriteria.RenderType.values(), ObjectiveCriteria.RenderType::getId);
         this.knownName(RegistryTypes.PANDA_GENE, Panda.Gene.values(), Panda.Gene::getName);
@@ -209,6 +217,7 @@ final class VanillaRegistryLoader {
         this.automaticName(RegistryTypes.TROPICAL_FISH_SHAPE, TropicalFish.Pattern.values());
         this.automaticName(RegistryTypes.HEIGHT_TYPE, Heightmap.Types.values());
         this.knownName(RegistryTypes.ENTITY_CATEGORY, MobCategory.values(), VanillaRegistryLoader.sanitizedName(MobCategory::getName));
+        this.automaticSerializedName(RegistryTypes.WALL_CONNECTION_STATE, WallSide.values());
     }
 
     private static RegistryLoader<Criterion> criterion() {
@@ -295,6 +304,11 @@ final class VanillaRegistryLoader {
     @SuppressWarnings("UnusedReturnValue")
     private <A, I extends Enum<I>> Registry<A> automaticName(final RegistryType<A> type, final I[] values) {
         return this.naming(type, values, VanillaRegistryLoader.sanitizedName(Enum::name));
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    private <A, I extends Enum<I> & StringRepresentable> Registry<A> automaticSerializedName(final RegistryType<A> type, final I[] values) {
+        return this.naming(type, values, StringRepresentable::getSerializedName);
     }
 
     @SuppressWarnings("UnusedReturnValue")

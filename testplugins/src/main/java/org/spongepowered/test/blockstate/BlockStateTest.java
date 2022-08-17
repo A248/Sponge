@@ -30,7 +30,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.command.parameter.CommandContext;
+import org.spongepowered.api.data.BlockStateKeys;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.data.value.Value;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
@@ -42,6 +44,7 @@ import org.spongepowered.api.registry.RegistryTypes;
 import org.spongepowered.api.state.BooleanStateProperties;
 import org.spongepowered.api.state.BooleanStateProperty;
 import org.spongepowered.api.state.StateProperty;
+import org.spongepowered.api.world.server.ServerLocation;
 import org.spongepowered.plugin.PluginContainer;
 import org.spongepowered.plugin.builtin.jvm.Plugin;
 import org.spongepowered.test.LoadableModule;
@@ -70,9 +73,14 @@ public class BlockStateTest implements LoadableModule {
             if (event.context().get(EventContextKeys.USED_HAND).map(hand -> hand == HandTypes.MAIN_HAND.get()).orElse(false)) {
                 final BlockState state = event.block().state();
                 player.sendMessage(Component.text("Interacted block is " + state.asString() + " and has the following properties:").color(NamedTextColor.GREEN));
+                final ServerLocation loc = event.block().location().get();
                 for (final Value.Immutable<?> value : state.getValues()) {
                     if (value.key().key().value().startsWith("property/")) {
                         player.sendMessage(Component.text(value.key().key().toString()).append(Component.text(": ")).append(Component.text(value.get().toString())));
+                    }
+                    if (value.key().equals(BlockStateKeys.NORTH_WALL)) {
+                        final BlockState newState = BlockTypes.BLACKSTONE_WALL.get().defaultState().mergeWith(state);
+                        loc.setBlock(newState);
                     }
                 }
                 state.statePropertyMap().forEach((prop, value) -> player.sendMessage(Component.text(prop.name()+ ": " + value.toString())));
@@ -80,7 +88,7 @@ public class BlockStateTest implements LoadableModule {
                     if (entry.getKey().equals(BooleanStateProperties.GRASS_BLOCK_SNOWY.get())) {
                         final ResourceKey key = RegistryTypes.BOOLEAN_STATE_PROPERTY.get().valueKey((BooleanStateProperty) entry.getKey());
                         player.sendMessage(Component.text(key.toString()));
-                        event.block().location().get().setBlock(state.withStateProperty(BooleanStateProperties.GRASS_BLOCK_SNOWY, !(Boolean) entry.getValue()).get());
+                        loc.setBlock(state.withStateProperty(BooleanStateProperties.GRASS_BLOCK_SNOWY, !(Boolean) entry.getValue()).get());
                     }
                 }
             }

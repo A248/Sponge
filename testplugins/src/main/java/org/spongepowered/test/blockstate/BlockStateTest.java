@@ -32,6 +32,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.command.parameter.CommandContext;
 import org.spongepowered.api.data.type.HandTypes;
+import org.spongepowered.api.data.value.Value;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.event.EventContextKeys;
 import org.spongepowered.api.event.Listener;
@@ -69,6 +70,11 @@ public class BlockStateTest implements LoadableModule {
             if (event.context().get(EventContextKeys.USED_HAND).map(hand -> hand == HandTypes.MAIN_HAND.get()).orElse(false)) {
                 final BlockState state = event.block().state();
                 player.sendMessage(Component.text("Interacted block is " + state.asString() + " and has the following properties:").color(NamedTextColor.GREEN));
+                for (final Value.Immutable<?> value : state.getValues()) {
+                    if (value.key().key().value().startsWith("property/")) {
+                        player.sendMessage(Component.text(value.key().key().toString()).append(Component.text(": ")).append(Component.text(value.get().toString())));
+                    }
+                }
                 state.statePropertyMap().forEach((prop, value) -> player.sendMessage(Component.text(prop.name()+ ": " + value.toString())));
                 for (Map.Entry<StateProperty<?>, ?> entry : state.statePropertyMap().entrySet()) {
                     if (entry.getKey().equals(BooleanStateProperties.GRASS_BLOCK_SNOWY.get())) {

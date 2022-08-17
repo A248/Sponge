@@ -137,7 +137,8 @@ public final class BlockStateDataProvider {
 
         registrator.asImmutable(BlockState.class)
                 .create(key)
-                    .get(bs -> (T) bs.getValue(property))
+                    .supports(bs -> bs.getOptionalValue(property).isPresent())
+                    .get(bs -> (T) bs.getOptionalValue(property).orElse(null))
                     .set((bs, v) -> bs.setValue(property, (V) v));
     }
     // @formatter:on
